@@ -22,3 +22,25 @@ void MethodLibrary::ReplaceAtPosition(std::list<std::pair<Vector2Int, Mappable>>
 		}
 	}
 }
+
+bool MethodLibrary::HasObstacle(std::list<std::pair<Vector2Int, Mappable>>& map, const Vector2Int& position)
+{
+	for (auto& tile : map) {
+		if (tile.first == position) return tile.second.IsObstacle;
+		else if (IsOutsideMap(position)) return true;
+	}
+	return false;
+}
+
+std::optional<Mappable> MethodLibrary::ObjectAt(std::list<std::pair<Vector2Int, Mappable>>& list, const Vector2Int& position)
+{
+	for (auto& tile : list) {
+		if (tile.first == position) return tile.second;
+	}
+	return false;
+}
+
+bool MethodLibrary::IsOutsideMap(const Vector2Int& position)
+{
+	return position.x >= MAP_CONSTRAINT_X || position.y >= MAP_CONSTRAINT_Y || position.x < 0 || position.y < 0;
+}

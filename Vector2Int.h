@@ -16,5 +16,6 @@ public:
 	Vector2Int DirectionVector(Vector2Int& a, Vector2Int& b);
 
 	friend bool operator==(const Vector2Int& lhs, const Vector2Int& rhs);
+	friend Vector2Int operator+(const Vector2Int& lhs, const Vector2Int& rhs);
 };
 

@@ -15,8 +15,8 @@ int main()
 
     Player player("Hector", Character::Race::Human, 30, 50);
 
-    for (int y = 0; y < 15; y++) {
-        for (int x = 0; x < 30; x++) {
+    for (int y = 0; y < MAP_CONSTRAINT_Y; y++) {
+        for (int x = 0; x < MAP_CONSTRAINT_X; x++) {
             Map.push_back(pair<Vector2Int, Mappable>(Vector2Int(x, y), Mappable()));
         }
     }

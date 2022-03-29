@@ -11,13 +11,15 @@ protected:
 
 	int MP;
 	int MaxMP;
+
+	Vector2Int Position;
 public:
 	enum class Race { Dwarf, Elf, Human, Fairy, Goblin, Orc, Lizardfolk };
 
 	std::string Name;
 	Race CharacterRace;
 
-	Character(std::string name, Race race, int maxHP, int maxMP);
+	Character(std::string name, Race race, int maxHP, int maxMP, Vector2Int position);
 
 	void TakeDamage(int amount);
 	void Heal(int amount);
@@ -28,6 +30,7 @@ public:
 
 	int GetHP();
 	int GetMP();
+	Vector2Int GetPosition();
 
 	void SetMaxHP(int num);
 	void SetMaxMP(int num);
