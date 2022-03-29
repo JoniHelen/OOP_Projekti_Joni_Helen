@@ -1,3 +1,5 @@
 #include "Mappable.h"
 
-Mappable::Mappable() { }
+Mappable::Mappable() : MapKey('.') { }
+
+Mappable::Mappable(char mapKey) : MapKey(mapKey) { }

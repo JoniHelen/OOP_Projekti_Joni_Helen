@@ -4,6 +4,7 @@
 Character::Character(std::string name, Race race, int maxHP, int maxMP)
 { 
 	Name = name;
+	MapKey = name[0];
 	CharacterRace = race;
 	MaxHP = maxHP;
 	MaxMP = maxMP;

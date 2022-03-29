@@ -12,5 +12,5 @@ private:
 public:
 	std::list<std::unique_ptr<Item>> Inventory;
 
-	Player(std::string name, Race race, int maxHP, int maxMP, Vector2Int& pos);
+	Player(std::string name, Race race, int maxHP, int maxMP);
 };
