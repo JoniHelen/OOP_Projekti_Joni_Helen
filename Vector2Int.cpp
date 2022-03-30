@@ -17,6 +17,26 @@ Vector2Int Vector2Int::DirectionVector(Vector2Int& a, Vector2Int& b)
 	return Vector2Int(b.x - b.y, b.y - a.y);
 }
 
+Vector2Int Vector2Int::Up()
+{
+	return Vector2Int(0, 1);
+}
+
+Vector2Int Vector2Int::Down()
+{
+	return Vector2Int(0, -1);
+}
+
+Vector2Int Vector2Int::Left()
+{
+	return Vector2Int(-1, 0);
+}
+
+Vector2Int Vector2Int::Right()
+{
+	return Vector2Int(1, 0);
+}
+
 bool operator==(const Vector2Int& lhs, const Vector2Int& rhs)
 {
 	return lhs.x == rhs.x && lhs.y == rhs.y;

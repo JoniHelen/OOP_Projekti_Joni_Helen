@@ -7,7 +7,6 @@ public:
 
 	Mappable();
 	Mappable(char mapKey);
-	Mappable(bool isObstacle);
 	Mappable(char mapKey, bool isObstacle);
 };
 

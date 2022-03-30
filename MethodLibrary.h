@@ -2,25 +2,30 @@
 #include <list>
 #include <string>
 #include <iostream>
-#include <optional>
+#include <random>
 #include "Vector2Int.h"
 #include "Mappable.h"
+#include "Dictionary.h"
+
+class Player;
 
 namespace MethodLibrary
 {
 	constexpr int MAP_CONSTRAINT_Y = 15;
 	constexpr int MAP_CONSTRAINT_X = 30;
 
-	void PrintMap(std::list<std::pair<Vector2Int, Mappable>>& map);
+	
 
-	void ReplaceAtPosition(std::list<std::pair<Vector2Int, Mappable>>& list, const Vector2Int& position, Mappable& value);
+	void PrintMap(Dictionary<Vector2Int, Mappable>& map);
 
-	bool HasObstacle(std::list<std::pair<Vector2Int, Mappable>>& list, const Vector2Int& position);
+	void ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, const Vector2Int& position, const Mappable& value);
 
-	std::optional<Mappable> ObjectAt(std::list<std::pair<Vector2Int, Mappable>>& list, const Vector2Int& position);
+	bool HasObstacle(Dictionary<Vector2Int, Mappable>& map, const Vector2Int& position);
 
 	bool IsOutsideMap(const Vector2Int& position);
 
-	enum class Direction { North, East, South, West };
+	void HandleInput(char input, Dictionary<Vector2Int, Mappable>& map, Player& player);
+
+	void MakeTrees(Dictionary<Vector2Int, Mappable>& map, int amount);
 }
 

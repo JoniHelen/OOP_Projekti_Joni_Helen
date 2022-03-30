@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Character.h"
-#include "Item.h"
-#include "Mappable.h"
-#include "MethodLibrary.h"
 #include <list>
 #include <memory>
+#include "Character.h"
+#include "Dictionary.h"
+#include "Item.h"
+#include "Mappable.h"
 
 class Player : public Character
 {
@@ -15,7 +15,11 @@ public:
 
 	std::list<std::unique_ptr<Item>> Inventory;
 
-	Player(std::string name, Race race, int maxHP, int maxMP);
+	Player(std::string name, Race race, int maxHP, int maxMP, Vector2Int position);
 
-	std::optional<Mappable> Move(std::list<std::pair<Vector2Int, Mappable>>& map, MethodLibrary::Direction direction);
+	void Move(Dictionary<Vector2Int, Mappable>&map, Direction direction);
+
+	void LookAndTryStep(const Vector2Int& target, Dictionary<Vector2Int, Mappable>& map);
+
+	void Step(Dictionary<Vector2Int, Mappable>& map, const Vector2Int& movement);
 };

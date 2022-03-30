@@ -16,6 +16,8 @@ protected:
 public:
 	enum class Race { Dwarf, Elf, Human, Fairy, Goblin, Orc, Lizardfolk };
 
+	enum class Direction { North, East, South, West };
+
 	std::string Name;
 	Race CharacterRace;
 

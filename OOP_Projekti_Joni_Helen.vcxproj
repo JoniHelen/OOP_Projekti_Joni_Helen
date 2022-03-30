@@ -150,6 +150,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
+    <ClInclude Include="Dictionary.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Mappable.h" />
     <ClInclude Include="MethodLibrary.h" />
