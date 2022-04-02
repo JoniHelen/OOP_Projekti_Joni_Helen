@@ -1,7 +1,7 @@
 #include "Character.h"
 #include <algorithm>
 
-Character::Character(std::string name, Race race, int maxHP, int maxMP, Vector2Int position) : Mappable(name[0])
+Character::Character(std::string name, Race race, int maxHP, int maxMP, Vector2Int position) : Mappable(name[0], true)
 { 
 	Name = name;
 	CharacterRace = race;

@@ -21,27 +21,34 @@ int main()
         }
     }
 
-    Player player("Hector", Character::Race::Human, 30, 50, Vector2Int(0, 0));
+    Player* player = new Player("Hector", Character::Race::Human, 30, 50, Vector2Int(0, 0));
 
     for (int i = 0; i < 5; i++) {
         ReplaceAtPosition(Map, Vector2Int(i + 3, 7), new Item("Banana"));
     }
 
-    ReplaceAtPosition(Map, player.GetPosition(), &player);
+    ReplaceAtPosition(Map, player->GetPosition(), player);
 
-    MakeTrees(Map, 10);
+    MakeTrees(Map, 25);
 
     char in;
 
     PrintMap(Map);
-    cout << "Bananas collected: " << player.Inventory.size() << endl;
+    cout << "Bananas collected: " << player->Inventory.size() << "/30" << endl;
 
     while (true) {
         in = _getch();
-        HandleInput(in, Map, player);
+
+        if (player->Inventory.size() >= 30 && in == 'q') {
+            break;
+        }
+
+        HandleInput(in, Map, *player);
         system("cls");
         PrintMap(Map);
-
-        cout << "Bananas collected: " << player.Inventory.size() << endl;
+        
+        if (player->Inventory.size() >= 30) cout << "Bananas collected: " << player->Inventory.size() << "/30 - press q to quit." << endl;
+        else cout << "Bananas collected: " << player->Inventory.size() << "/30" << endl;
+        
     }
 }
