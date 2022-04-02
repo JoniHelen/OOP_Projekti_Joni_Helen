@@ -8,5 +8,7 @@ public:
 	Mappable();
 	Mappable(char mapKey);
 	Mappable(char mapKey, bool isObstacle);
+
+	virtual ~Mappable();
 };
 

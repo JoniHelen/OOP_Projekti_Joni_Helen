@@ -1,70 +1,146 @@
 #pragma once
 #include <list>
 #include <functional>
+#include <stdexcept>
 
 template <typename TKey, typename TValue>
-class Dictionary {
+class Dictionary { // Tein itse ja s‰‰stin.
 private:
-	TKey Key;
-	TValue Value;
-
-	std::list<std::pair<TKey, TValue>> Collection;
+	std::list<std::unique_ptr<std::pair<TKey, std::unique_ptr<TValue>>>> Collection;
 public:
 	Dictionary();
 
 	// Adds a pair to the collection.
-	void Add(const TKey& key, const TValue& value);
+	void Add(const TKey& key, TValue&& value);
 
 	// Removes a pair with the specified Key.
 	void Remove(TKey key);
 
 	// Checks if the collection contains any Value.
-	bool Any(TValue value);
+	bool Any(TValue&& value);
 
-	// Returns Value at Key if found, otherwise false.
-	TValue* TryGetValue(TKey key);
+	// Sets Value at Key if found.
+	void TrySetValue(TKey&& key, TValue* value);
+
+	// Sets Value at Key if found.
+	void TrySetValue(TKey& key, TValue* value);
+
+	// Sets Value at Key if found.
+	void TrySwapValues(TKey&& key_first, TKey&& key_second);
+
+	// Sets Value at Key if found.
+	void TrySwapValues(TKey& key_first, TKey&& key_second);
+
+	// Sets Value at Key if found.
+	void TrySwapValues(TKey&& key_first, TKey& key_second);
+
+	// Sets Value at Key if found.
+	void TrySwapValues(TKey& key_first, TKey& key_second);
+
+	// Gets a reference to a value at the given Key if found.
+	std::unique_ptr<TValue>& ValueAt(TKey& key);
+
+	// Gets a reference to a value at the given Key if found.
+	std::unique_ptr<TValue>& ValueAt(TKey&& key);
 
 	// Executes a function for each element in the collection.
-	void ForEach(std::function<void(std::pair<TKey, TValue>&)> func);
+	void ForEach(std::function<void(std::unique_ptr<std::pair<TKey, std::unique_ptr<TValue>>>&)> func);
 };
 
 template<typename TKey, typename TValue>
 inline Dictionary<TKey, TValue>::Dictionary() { }
 
 template<typename TKey, typename TValue>
-inline void Dictionary<TKey, TValue>::Add(const TKey& key, const TValue& value) 
-{ 
-	Collection.push_back(std::pair<TKey, TValue>(key, value));
+inline void Dictionary<TKey, TValue>::Add(const TKey& key, TValue&& value)
+{
+	Collection.push_back(std::make_unique<std::pair<TKey, std::unique_ptr<TValue>>>(key, std::make_unique<TValue>(value)));
 }
 
 template<typename TKey, typename TValue>
 inline void Dictionary<TKey, TValue>::Remove(TKey key)
 {
-	Collection.remove_if([](const std::pair<TKey, TValue> kvp) { return kvp.first == key; });
+	int size = Collection.size();
+	Collection.remove_if([key](const std::pair<TKey, std::unique_ptr<TValue>>& kvp) { return kvp.first == key; });
+	if (size = Collection.size()) throw std::out_of_range("The given Key was not in the Dictionary.");
 }
 
 template<typename TKey, typename TValue>
-inline bool Dictionary<TKey, TValue>::Any(TValue value)
+inline bool Dictionary<TKey, TValue>::Any(TValue&& value)
 {
-	for (std::pair<TKey, TValue>& item : Collection) {
-		if (item.second == value) return true;
+	for (auto& item : Collection) {
+		if (item->second.get() == value) return true;
 	}
 	return false;
 }
 
 template<typename TKey, typename TValue>
-inline TValue* Dictionary<TKey, TValue>::TryGetValue(TKey key)
+inline void Dictionary<TKey, TValue>::TrySetValue(TKey&& key, TValue* value)
 {
-	for (std::pair<TKey, TValue>& item : Collection) {
-		if (item.first == key) return &item.second;
+	for (auto& item : Collection) {
+		if (item->first == key) {
+			item->second = std::unique_ptr<TValue>(value);
+			return;
+		}
 	}
-	return nullptr;
+	throw std::out_of_range("The given Key was not in the Dictionary.");
 }
 
 template<typename TKey, typename TValue>
-inline void Dictionary<TKey, TValue>::ForEach(std::function<void(std::pair<TKey, TValue>&)> func)
+inline void Dictionary<TKey, TValue>::TrySetValue(TKey& key, TValue* value)
 {
-	for (std::pair<TKey, TValue>& item : Collection) {
-		func(item);
+	for (auto& item : Collection) {
+		if (item->first == key) {
+			item->second = std::unique_ptr<TValue>(value);
+			return;
+		}	
 	}
+	throw std::out_of_range("The given Key was not in the Dictionary.");
+}
+
+template<typename TKey, typename TValue>
+inline void Dictionary<TKey, TValue>::TrySwapValues(TKey&& key_first, TKey&& key_second)
+{
+	ValueAt(key_first).swap(ValueAt(key_second));
+}
+
+template<typename TKey, typename TValue>
+inline void Dictionary<TKey, TValue>::TrySwapValues(TKey& key_first, TKey&& key_second)
+{
+	ValueAt(key_first).swap(ValueAt(key_second));
+}
+
+template<typename TKey, typename TValue>
+inline void Dictionary<TKey, TValue>::TrySwapValues(TKey&& key_first, TKey& key_second)
+{
+	ValueAt(key_first).swap(ValueAt(key_second));
+}
+
+template<typename TKey, typename TValue>
+inline void Dictionary<TKey, TValue>::TrySwapValues(TKey& key_first, TKey& key_second)
+{
+	ValueAt(key_first).swap(ValueAt(key_second));
+}
+
+template<typename TKey, typename TValue>
+inline std::unique_ptr<TValue>& Dictionary<TKey, TValue>::ValueAt(TKey& key)
+{
+	for (auto& item : Collection) {
+		if (item->first == key) return item->second;
+	}
+	throw std::out_of_range("The given Key was not in the Dictionary.");
+}
+
+template<typename TKey, typename TValue>
+inline std::unique_ptr<TValue>& Dictionary<TKey, TValue>::ValueAt(TKey&& key)
+{
+	for (auto& item : Collection) {
+		if (item->first == key) return item->second;
+	}
+	throw std::out_of_range("The given Key was not in the Dictionary.");
+}
+
+template<typename TKey, typename TValue>
+inline void Dictionary<TKey, TValue>::ForEach(std::function<void(std::unique_ptr<std::pair<TKey, std::unique_ptr<TValue>>>&)> func)
+{
+	for (auto& item : Collection) func(item);
 }

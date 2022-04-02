@@ -1,5 +1,8 @@
 #include "Player.h"
 #include "MethodLibrary.h"
+#include <iostream>
+#include <typeinfo>
+#include <conio.h>
 
 using namespace MethodLibrary;
 
@@ -33,16 +36,23 @@ void Player::LookAndTryStep(const Vector2Int& dirV2, Dictionary<Vector2Int, Mapp
 	Vector2Int target = Position + dirV2;
 
 	if (!IsOutsideMap(target)) {
-		if (HasObstacle(map, target))
-			Inventory.emplace_back(static_cast<Item*>(map.TryGetValue(target)));
-
-		Step(map, dirV2);
+		if (HasObstacle(map, target)) {
+			Item* item = dynamic_cast<Item*>(map.ValueAt(target).get());
+			if (item) {
+				Inventory.push_back(std::unique_ptr<Item>(item));
+				ReplaceAtPosition(map, target, new Mappable());
+				Step(map, dirV2);
+				SpawnNewItem(map);
+			}
+		}
+		else {
+			Step(map, dirV2);
+		}
 	}
 }
 
 void Player::Step(Dictionary<Vector2Int, Mappable>& map, const Vector2Int& movement)
 {
-	ReplaceAtPosition(map, Position + movement, *this);
-	ReplaceAtPosition(map, Position, Mappable());
+	map.TrySwapValues(Position, Position + movement);
 	Position = Position + movement;
 }

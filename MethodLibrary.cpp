@@ -1,9 +1,10 @@
 #include "MethodLibrary.h"
 #include "Player.h"
+#include <typeinfo>
+#include <iostream>
 
-
-std::uniform_int_distribution<int> DistributionX(0, MethodLibrary::MAP_CONSTRAINT_X);
-std::uniform_int_distribution<int> DistributionY(0, MethodLibrary::MAP_CONSTRAINT_Y);
+std::uniform_int_distribution<int> DistributionX(0, MethodLibrary::MAP_CONSTRAINT_X - 1);
+std::uniform_int_distribution<int> DistributionY(0, MethodLibrary::MAP_CONSTRAINT_Y - 1);
 
 std::random_device rndEngine;
 
@@ -11,23 +12,44 @@ void MethodLibrary::PrintMap(Dictionary<Vector2Int, Mappable>& map) {
 
 	std::string result;
 
-	map.ForEach([&result](std::pair<Vector2Int, Mappable>& kvp) {
-		if (kvp.first.x == 0) result += '\n';
-		result += kvp.second.MapKey;
+	map.ForEach([&result](std::unique_ptr<std::pair<Vector2Int, std::unique_ptr<Mappable>>>& kvp) {
+		if (kvp->first.x == 0) result += '\n';
+		result += kvp->second->MapKey;
 	});
 
 	std::cout << result << std::endl;
 }
 
-void MethodLibrary::ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, const Vector2Int& position, const Mappable& value)
+void MethodLibrary::ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, Vector2Int&& position, Mappable* value)
 {
-	auto r = map.TryGetValue(position);
-	if (r != nullptr) *r = value;
+	map.TrySetValue(position, value);
 }
 
-bool MethodLibrary::HasObstacle(Dictionary<Vector2Int, Mappable>& map, const Vector2Int& position)
+void MethodLibrary::ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, Vector2Int& position, Mappable* value)
 {
-	return map.TryGetValue(position)->IsObstacle;
+	map.TrySetValue(position, value);
+}
+
+void MethodLibrary::SpawnNewItem(Dictionary<Vector2Int, Mappable>& map)
+{
+	Vector2Int newSpot(DistributionX(rndEngine), DistributionY(rndEngine));
+	while (true) {
+		if (!map.ValueAt(newSpot)->IsObstacle) {
+			map.TrySetValue(newSpot, new Item("Banana"));
+			break;
+		}
+		else newSpot = Vector2Int(DistributionX(rndEngine), DistributionY(rndEngine));
+	}
+}
+
+bool MethodLibrary::HasObstacle(Dictionary<Vector2Int, Mappable>& map, Vector2Int&& position)
+{
+	return map.ValueAt(position)->IsObstacle;
+}
+
+bool MethodLibrary::HasObstacle(Dictionary<Vector2Int, Mappable>& map, Vector2Int& position)
+{
+	return map.ValueAt(position)->IsObstacle;
 }
 
 bool MethodLibrary::IsOutsideMap(const Vector2Int& position)
@@ -58,6 +80,6 @@ void MethodLibrary::HandleInput(char input, Dictionary<Vector2Int, Mappable>& ma
 void MethodLibrary::MakeTrees(Dictionary<Vector2Int, Mappable>& map, int amount)
 {
 	for (int i = 0; i < amount; i++) {
-		ReplaceAtPosition(map, Vector2Int(DistributionX(rndEngine), DistributionY(rndEngine)), Mappable('A', true));
+		ReplaceAtPosition(map, Vector2Int(DistributionX(rndEngine), DistributionY(rndEngine)), new Mappable('A', true));
 	}
 }

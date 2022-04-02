@@ -24,16 +24,17 @@ int main()
     Player player("Hector", Character::Race::Human, 30, 50, Vector2Int(0, 0));
 
     for (int i = 0; i < 5; i++) {
-        ReplaceAtPosition(Map, Vector2Int(i + 3, 7), Item("Banana"));
+        ReplaceAtPosition(Map, Vector2Int(i + 3, 7), new Item("Banana"));
     }
 
-    ReplaceAtPosition(Map, player.GetPosition(), player);
+    ReplaceAtPosition(Map, player.GetPosition(), &player);
 
     MakeTrees(Map, 10);
 
     char in;
 
     PrintMap(Map);
+    cout << "Bananas collected: " << player.Inventory.size() << endl;
 
     while (true) {
         in = _getch();
@@ -41,6 +42,6 @@ int main()
         system("cls");
         PrintMap(Map);
 
-        cout << "Inventory size: " << player.Inventory.size() << endl;
+        cout << "Bananas collected: " << player.Inventory.size() << endl;
     }
 }
