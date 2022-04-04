@@ -16,9 +16,6 @@ namespace MethodLibrary
 
 	void PrintMap(Dictionary<Vector2Int, Mappable>& map);
 
-	void ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, Vector2Int&& position, Mappable* value);
-	void ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, Vector2Int& position, Mappable* value);
-
 	void SpawnNewItem(Dictionary<Vector2Int, Mappable>& map);
 
 	bool HasObstacle(Dictionary<Vector2Int, Mappable>& map, Vector2Int&& position);

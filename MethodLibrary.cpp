@@ -20,16 +20,6 @@ void MethodLibrary::PrintMap(Dictionary<Vector2Int, Mappable>& map) {
 	std::cout << result << std::endl;
 }
 
-void MethodLibrary::ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, Vector2Int&& position, Mappable* value)
-{
-	map.TrySetValue(position, value);
-}
-
-void MethodLibrary::ReplaceAtPosition(Dictionary<Vector2Int, Mappable>& map, Vector2Int& position, Mappable* value)
-{
-	map.TrySetValue(position, value);
-}
-
 void MethodLibrary::SpawnNewItem(Dictionary<Vector2Int, Mappable>& map)
 {
 	Vector2Int newSpot(DistributionX(rndEngine), DistributionY(rndEngine));

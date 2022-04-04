@@ -21,15 +21,44 @@ int main()
         }
     }
 
-    Player* player = new Player("Hector", Character::Race::Human, 30, 50, Vector2Int(0, 0));
-
     for (int i = 0; i < 5; i++) {
-        ReplaceAtPosition(Map, Vector2Int(i + 3, 7), new Item("Banana"));
+        Map.TrySetValue(Vector2Int(i + 3, 7), new Item("Banana"));
     }
 
-    ReplaceAtPosition(Map, player->GetPosition(), player);
-
     MakeTrees(Map, 25);
+
+    string inName;
+    int inMaxHP;
+
+    cout << "Give a name for your character: ";
+    getline(cin, inName);
+
+    system("cls");
+
+    while (true) {
+        cout << "Enter the amount of max HP you'd like: ";
+        cin >> inMaxHP;
+
+        if (!cin.fail()) {
+            try {
+                if (inMaxHP < 1) {
+                    throw "Max HP cannot be less than 1.";
+                }
+                else {
+                    break;
+                }
+            }
+            catch (const char* msg) {
+                cout << msg;
+                _getch();
+                system("cls");
+            }
+        }
+    }
+
+    Player* player = new Player(inName, Character::Race::Human, inMaxHP, 50, Vector2Int(0, 0));
+
+    Map.TrySetValue(player->GetPosition(), player);
 
     char in;
 

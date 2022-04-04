@@ -40,7 +40,7 @@ void Player::LookAndTryStep(const Vector2Int& dirV2, Dictionary<Vector2Int, Mapp
 			Item* item = dynamic_cast<Item*>(map.ValueAt(target).get());
 			if (item) {
 				Inventory.push_back(std::make_unique<Item>(*item));
-				ReplaceAtPosition(map, target, new Mappable());
+				map.TrySetValue(target, new Mappable());
 				Step(map, dirV2);
 				SpawnNewItem(map);
 			}
