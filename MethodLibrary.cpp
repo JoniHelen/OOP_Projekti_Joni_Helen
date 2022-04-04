@@ -80,6 +80,13 @@ void MethodLibrary::HandleInput(char input, Dictionary<Vector2Int, Mappable>& ma
 void MethodLibrary::MakeTrees(Dictionary<Vector2Int, Mappable>& map, int amount)
 {
 	for (int i = 0; i < amount; i++) {
-		ReplaceAtPosition(map, Vector2Int(DistributionX(rndEngine), DistributionY(rndEngine)), new Mappable('A', true));
+		Vector2Int newSpot(DistributionX(rndEngine), DistributionY(rndEngine));
+		while (true) {
+			if (!map.ValueAt(newSpot)->IsObstacle) {
+				map.TrySetValue(newSpot, new Mappable('A', true));
+				break;
+			}
+			else newSpot = Vector2Int(DistributionX(rndEngine), DistributionY(rndEngine));
+		}
 	}
 }

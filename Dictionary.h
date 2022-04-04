@@ -11,13 +11,22 @@ public:
 	Dictionary();
 
 	// Adds a pair to the collection.
-	void Add(const TKey& key, TValue&& value);
+	void Add(TKey& key, TValue&& value);
+
+	// Adds a pair to the collection.
+	void Add(TKey&& key, TValue&& value);
 
 	// Removes a pair with the specified Key.
 	void Remove(TKey key);
 
 	// Checks if the collection contains any Value.
 	bool Any(TValue&& value);
+
+	// Checks if the dictionary contains a specific key.
+	bool ContainsKey(TKey& key);
+
+	// Checks if the dictionary contains a specific key.
+	bool ContainsKey(TKey&& key);
 
 	// Sets Value at Key if found.
 	void TrySetValue(TKey&& key, TValue* value);
@@ -51,9 +60,21 @@ template<typename TKey, typename TValue>
 inline Dictionary<TKey, TValue>::Dictionary() { }
 
 template<typename TKey, typename TValue>
-inline void Dictionary<TKey, TValue>::Add(const TKey& key, TValue&& value)
+inline void Dictionary<TKey, TValue>::Add(TKey& key, TValue&& value)
 {
-	Collection.push_back(std::make_unique<std::pair<TKey, std::unique_ptr<TValue>>>(key, std::make_unique<TValue>(value)));
+	if (!ContainsKey(key))
+		Collection.push_back(std::make_unique<std::pair<TKey, std::unique_ptr<TValue>>>(key, std::make_unique<TValue>(value)));
+	else
+		throw std::invalid_argument("The given key already exists in the Dictionary.");
+}
+
+template<typename TKey, typename TValue>
+inline void Dictionary<TKey, TValue>::Add(TKey&& key, TValue&& value)
+{
+	if (!ContainsKey(key))
+		Collection.push_back(std::make_unique<std::pair<TKey, std::unique_ptr<TValue>>>(key, std::make_unique<TValue>(value)));
+	else
+		throw std::invalid_argument("The given key already exists in the Dictionary.");
 }
 
 template<typename TKey, typename TValue>
@@ -68,7 +89,25 @@ template<typename TKey, typename TValue>
 inline bool Dictionary<TKey, TValue>::Any(TValue&& value)
 {
 	for (auto& item : Collection) {
-		if (item->second.get() == value) return true;
+		if (*(item->second.get()) == value) return true;
+	}
+	return false;
+}
+
+template<typename TKey, typename TValue>
+inline bool Dictionary<TKey, TValue>::ContainsKey(TKey& key)
+{
+	for (auto& item : Collection) {
+		if (item->first == key) return true;
+	}
+	return false;
+}
+
+template<typename TKey, typename TValue>
+inline bool Dictionary<TKey, TValue>::ContainsKey(TKey&& key)
+{
+	for (auto& item : Collection) {
+		if (item->first == key) return true;
 	}
 	return false;
 }
